@@ -14,7 +14,7 @@ public class Dirsearch {
 	public String url;
 	public Dirsearch(String url) throws Exception {
 		this.url = url;
-		System.out.println("¼ì²â¿ªÊ¼");
+		System.out.println("æ£€æµ‹å¼€å§‹");
 		String[] servlet = {
 				"MonitorServlet",
 				"MxServlet",
@@ -32,7 +32,7 @@ public class Dirsearch {
 		curltest("servlet/~ic/bsh.servlet.BshServlet","BshServlet");
 		curltest("servlet/~ic/ShowAlertFileServlet","ShowAlertFileServlet");
 		curltest("uapws/pages/error.jsp?msg=<img%20src=1>","errorXSS");
-		System.out.println("¼ì²âÍê±Ï");
+		System.out.println("æ£€æµ‹å®Œæ¯•");
 	}
 	
 
@@ -41,7 +41,7 @@ public class Dirsearch {
 		try {
 			curlexec(Servlet, Servletname);
 		} catch (Exception e) {
-			System.out.println("·ÃÎÊ"+Servletname+"Ê§°Ü£¬Çë¼ì²âÍøÂç£¬»òÕß´æÔÚwaf");
+			System.out.println("è®¿é—®"+Servletname+"å¤±è´¥ï¼Œè¯·æ£€æµ‹ç½‘ç»œï¼Œæˆ–è€…å­˜åœ¨waf");
 		}
 		
 	}
@@ -73,22 +73,20 @@ public class Dirsearch {
                 sbf.append(temp);
             }
         	if (Servletname.equals("BshServlet")) {
-        		System.out.println("´æÔÚ BshServlet Çë·ÃÎÊ "+this.url+Servlet);
-			} else if (Servletname.equals("BshServlet")) {
-				System.out.println("´æÔÚ BshServlet Çë·ÃÎÊ "+this.url+Servlet);
+        		System.out.println("å­˜åœ¨ BshServlet è¯·è®¿é—® "+this.url+Servlet);
 			} else if (Servletname.equals("ShowAlertFileServlet")) {
-				System.out.println("´æÔÚ ShowAlertFileServlet 302Ìø×ªÎª  "+connection.getHeaderField("Location"));
+				System.out.println("å­˜åœ¨ ShowAlertFileServlet 302è·³è½¬ä¸º  "+connection.getHeaderField("Location"));
 			} else if (Servletname.equals("errorXSS")) {
 				if (sbf.indexOf("<img src=1>")!=-1) {
-					System.out.println("´æÔÚ errorXSS Çë·ÃÎÊ"+this.url+"uapws/pages/error.jsp?msg=<script>alert(1)</script>");
+					System.out.println("å­˜åœ¨ errorXSS è¯·è®¿é—®"+this.url+"uapws/pages/error.jsp?msg=<script>alert(1)</script>");
 				} else {
-					System.out.println("²»´æÔÚ "+Servletname);
+					System.out.println("ä¸å­˜åœ¨ "+Servletname);
 				}
 			} else {
-				System.out.println("´æÔÚ "+Servletname);
+				System.out.println("å­˜åœ¨ "+Servletname);
 			}
         } else {
-        	System.out.println("²»´æÔÚ "+Servletname);
+        	System.out.println("ä¸å­˜åœ¨ "+Servletname);
         }
 	}
 	
