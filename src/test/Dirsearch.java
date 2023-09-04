@@ -45,7 +45,6 @@ public class Dirsearch {
 		try {
 			curlexec(Servlet, Servletname);
 		} catch (Exception e) {
-			System.out.println(e);
 			System.out.println("访问"+Servletname+"失败，请检测网络，或者存在waf");
 		}
 		
@@ -113,7 +112,7 @@ public class Dirsearch {
 				break;
 			}
         } else if (connection.getResponseCode() == 500  && (sbf.indexOf("java.io.ObjectInputStream.readStreamHeader")!=-1 || sbf.indexOf("nc.bs.framework.js.command.InvokeCommand.execute")!=-1  )) {
-        	System.out.println("存在 "+Servletname);
+        	System.out.println("存在 "+Servletname+"请访问 "+this.url+Servlet);
 		} else {
         	System.out.println("不存在 "+Servletname);
         }
